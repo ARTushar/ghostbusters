@@ -6,7 +6,7 @@ import Cell from './Cell';
 
 function Board() {
 
-  let board = useSelector(state => state.board.board);
+  let {board, belief} = useSelector(state => state.board);
 
   let boardUI = [];
 
@@ -19,6 +19,7 @@ function Board() {
             key={board.length * i + j}
             row={i}
             col={j}
+            p={belief[i][j]}
           />
         ))}
         </ButtonGroup>

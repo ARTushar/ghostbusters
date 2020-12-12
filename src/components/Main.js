@@ -27,7 +27,7 @@ function Main() {
               marginBottom: '50px',
               textAlign: 'center'
             }}>
-              LINES OF CODE
+              Ghostbuster
       </h2>
             <Grid container justify="center">
               <Grid item align="right" md={6} style={{
