@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AdjustIcon from '@material-ui/icons/Adjust';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 // import { highlightAvailableMoves, move } from '../redux/actioncreators';
 import { useDispatch, useSelector } from 'react-redux';
-import { senseGhost } from '../redux/actioncreators';
+import { catchGhost, senseGhost, setHit } from '../redux/actioncreators';
+import { inCells } from '../game-logic/boardUtils';
 // import { getValidMoves } from '../game-logic/validMoves';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,11 +40,29 @@ function Cell(props) {
   const classes = useStyles();
   let buttonClassName = classes.cellButton;
   const dispatch = useDispatch();
-  let isHighlighted = false;
+  const { selectedCell, selectedCellColor, filteredCells, catchMode, ghostPosition } = useSelector(state => state.board);
   let color;
+  if(inCells(filteredCells, {row: props.row, col: props.col})){
+    color = "primary";
+  }
+  if(selectedCell && selectedCell.row == props.row && selectedCell.col == props.col) {
+    if(selectedCellColor === 'red') color = "secondary";
+    else if(selectedCellColor === 'orange') color = "primary";
+  }
+
+  const [message, setMessage] = useState('');
 
   const handleClick = () => {
-    dispatch(senseGhost({row: props.row, col: props.col}));
+    if(!catchMode){
+      dispatch(senseGhost({row: props.row, col: props.col}));
+    } else {
+      dispatch(catchGhost(false));
+      if(ghostPosition.row === props.row && ghostPosition.col === props.col){
+        dispatch(setHit(1));
+      } else {
+        dispatch(setHit(2));
+      }
+    }
   }
 
   return (
@@ -51,8 +70,9 @@ function Cell(props) {
       variant="contained"
       onClick={handleClick}
       className={buttonClassName}
+      color={color}
       >
-        {props.p.toFixed(3)}
+        {message.length == 0? props.p.toFixed(3): message}
     </Button>
   )
 }

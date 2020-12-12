@@ -55,7 +55,7 @@ export const moveGhost = (board, currentPosition, mostP)  => {
 export const calculatePartialBelief = (oldBelief, oldCells, mostP) => {
   const updatedBelief = [];
   let newCells = oldCells? [...oldCells]: [];
-  
+
   for(let i = 0; i < oldBelief.length; i++){
     updatedBelief[i] = [];
     for(let j = 0; j < oldBelief[i].length; j++){
@@ -70,7 +70,7 @@ export const calculatePartialBelief = (oldBelief, oldCells, mostP) => {
         val += ((1 - mostP) / getValidMoves(oldBelief, move.row, move.col).lessProbableMoves.length) * oldBelief[move.row][move.col]; 
       }
       console.log(val);
-      if(val > 0.0001 && !inCells(oldCells, {row: i, col: j})) {
+      if(val > 0.0001 && oldCells &&  !inCells(oldCells, {row: i, col: j})) {
         newCells.push({row: i, col: j});
       }
       updatedBelief[i][j] = val;

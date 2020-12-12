@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, makeStyles, Paper, TextField, Button } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux';
-import { moveGhost } from '../redux/actioncreators';
+import { catchGhost, moveGhost } from '../redux/actioncreators';
 // import {  finishGame } from '../redux/actioncreators';
 // import { getWinner } from '../game-logic/winningLogic';
 
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '340px'
   },
   customButton: {
-    minWidth: '150px',
+    minWidth: '200px',
     marginBottom: '20px'
   }
 }));
@@ -32,17 +32,21 @@ const useStyles = makeStyles((theme) => ({
 function GameDisplay({ setIsOpen }) {
   const classes = useStyles();
 
+  const hit = useSelector(state => state.board.hit);
+
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     setIsOpen(true);
     // dispatch(finishGame('', 0));
   }
 
-  const handleTransmission = (e) => {
-    e.preventDefault();
+  const handleTransmission = () => {
     dispatch(moveGhost());
+  }
+
+  const handleCatch = () => {
+    dispatch(catchGhost(true));
   }
 
   return (
@@ -67,6 +71,7 @@ function GameDisplay({ setIsOpen }) {
               variant="contained"
               color="primary"
               className={classes.customButton}
+              onClick={handleCatch}
             >
               Catch
             </Button>
@@ -82,6 +87,12 @@ function GameDisplay({ setIsOpen }) {
             >
               Quit
             </Button>
+          </Grid>
+          <Grid item align="center">
+            <TextField
+            label="Status"
+            value = {hit === 1? "HIT!": (hit === 2 ? "MISS!": "COME ON!")}
+            />
           </Grid>
       </Grid>
     </Paper>
